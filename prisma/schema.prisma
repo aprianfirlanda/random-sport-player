@@ -10,28 +10,29 @@ model Player {
   id        String   @id @default(uuid())
   name      String
   gender    Gender
-  totalPlay Int      @default(0)
   createdAt DateTime @default(now())
 
-  roundPlayers RoundPlayer[]
+  participations Participation[]
 }
 
-model Round {
+model Session {
   id        String   @id @default(uuid())
+  playDate  DateTime @unique
   createdAt DateTime @default(now())
 
-  roundPlayers RoundPlayer[]
+  participations Participation[]
 }
 
-model RoundPlayer {
-  roundId  String
-  playerId String
-  team     Int
+model Participation {
+  id        String @id @default(uuid())
+  playerId  String
+  sessionId String
+  playCount Int    @default(0)
 
-  round  Round  @relation(fields: [roundId], references: [id], onDelete: Cascade)
-  player Player @relation(fields: [playerId], references: [id])
+  player  Player  @relation(fields: [playerId], references: [id])
+  session Session @relation(fields: [sessionId], references: [id])
 
-  @@id([roundId, playerId])
+  @@unique([playerId, sessionId])
 }
 
 enum Gender {
